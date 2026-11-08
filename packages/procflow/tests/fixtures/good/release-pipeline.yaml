@@ -1,0 +1,39 @@
+sop:
+  id: RELEASE-PIPELINE
+  name: Release pipeline that delegates the gated step by interface
+  version: "1.0"
+interface:
+  inputs:
+    change_ref: {type: string, required: true}
+  outputs:
+    published: {type: bool}
+  raises: []
+context:
+  approved_flag: {type: bool, init: false}
+flow:
+  start: start
+  inputs:
+    - {id: change_ref, required: true}
+steps:
+  - {id: start, type: start}
+  - id: gated-change
+    type: call
+    interface: IF-APPROVAL@1
+    dispatch:
+      - {when: "change_ref != ''", sop: BACKUP-AND-VERIFY}
+    with: {change_ref: change_ref}
+    returns: {approved: approved_flag}
+    catch: {ApprovalDenied: rejected}
+    max_depth: 2
+  - id: publish
+    type: task
+    mode: auto
+    action: Publish the result
+    outputs: [published]
+  - {id: done, type: end, outcome: success}
+  - {id: rejected, type: end, outcome: rejected}
+transitions:
+  - {id: T1, from: start, to: gated-change}
+  - {id: T2, from: gated-change, to: publish, guard: "approved_flag == true"}
+  - {id: T3, from: publish, to: done}
+  - {id: T4, from: gated-change, to: rejected, default: true}

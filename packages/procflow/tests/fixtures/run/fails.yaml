@@ -1,0 +1,17 @@
+sop:
+  id: FAILS
+  name: A code step that fails
+  version: "1.0"
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: boom
+    type: task
+    mode: auto
+    action: Fail on purpose
+    impl: python3 boom.py
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: boom}
+  - {id: T2, from: boom, to: done}

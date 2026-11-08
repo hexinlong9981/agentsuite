@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "playbook"
+version = "0.0.1"
+description = "A generic, business-agnostic set of operating principles for AI agents (how to delegate, commit, gate risky actions, write deliverables, report progress), as structured data plus a rendered guide and a light self-check."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["ai-agent", "operating-principles", "playbook", "governance", "guidelines"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+playbook = "playbook.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/playbook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

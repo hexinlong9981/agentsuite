@@ -1,0 +1,3 @@
+sop: NIGHTLY-JOB
+defaults:
+  retry: {code: 2}

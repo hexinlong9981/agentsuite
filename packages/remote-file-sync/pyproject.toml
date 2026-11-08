@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "remote-file-sync"
+version = "0.1.0"
+description = "Pull files from a source into local destinations by policy: path classification, contained writes, read-only source, audit."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["sync", "pull", "read-only", "classification", "ai-agent", "mcp", "backup"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+rfsync = "remote_file_sync.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/remote_file_sync"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

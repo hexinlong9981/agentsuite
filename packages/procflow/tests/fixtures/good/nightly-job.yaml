@@ -1,0 +1,38 @@
+sop:
+  id: NIGHTLY-JOB
+  name: Nightly per-target job
+  version: "1.0"
+flow:
+  start: start
+  inputs:
+    - {id: targets, required: true}
+  outputs:
+    - {id: summary}
+steps:
+  - {id: start, type: start}
+  - id: each-target
+    type: loop
+    foreach: targets
+    as: target
+    max_iterations: 10
+    body: [run-one]
+  - id: run-one
+    type: task
+    mode: auto
+    action: Run the job for one target
+    outputs: [result]
+  - id: report
+    type: task
+    mode: auto
+    action: Write the summary
+    outputs: [summary]
+  - id: cleanup
+    type: task
+    mode: auto
+    action: Remove temporary files
+  - {id: done, type: end, outcome: success}
+finally: [cleanup]
+transitions:
+  - {id: T1, from: start, to: each-target}
+  - {id: T2, from: each-target, to: report}
+  - {id: T3, from: report, to: done}

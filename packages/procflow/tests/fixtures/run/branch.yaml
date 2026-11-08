@@ -1,0 +1,50 @@
+sop:
+  id: BRANCH
+  name: Label and decide_by branching
+  version: "1.0"
+flow:
+  start: start
+  inputs:
+    - {id: mode, required: true}
+steps:
+  - {id: start, type: start}
+  - id: pick
+    type: task
+    mode: auto
+    action: Classify the input
+    impl: python3 pick.py <mode>
+    outputs: [kind]
+  - id: route
+    type: exclusive_choice
+    decide_by: pick.kind
+  - id: left-step
+    type: task
+    mode: auto
+    action: Left
+  - id: right-step
+    type: task
+    mode: auto
+    action: Right
+  - id: ask
+    type: exclusive_choice
+  - id: fast
+    type: task
+    mode: auto
+    action: Fast path
+  - id: slow
+    type: task
+    mode: auto
+    action: Slow path
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: pick}
+  - {id: T2, from: pick, to: route}
+  - {id: T3, from: route, to: left-step, when: left}
+  - {id: T4, from: route, to: right-step, when: right}
+  - {id: T5, from: route, to: ask, default: true}
+  - {id: T6, from: left-step, to: done}
+  - {id: T7, from: right-step, to: done}
+  - {id: T8, from: ask, to: fast, when: fast}
+  - {id: T9, from: ask, to: slow, when: slow}
+  - {id: T10, from: fast, to: done}
+  - {id: T11, from: slow, to: done}

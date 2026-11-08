@@ -1,0 +1,31 @@
+sop:
+  id: CONTRACT-PARENT
+  name: Parent CONTRACT-PARENT
+  version: "1.0"
+interface:
+  inputs:
+    value: {type: string, required: true}
+    kind: {type: string, default: other}
+  outputs:
+    result: {type: string}
+  raises: []
+context:
+  result: {type: string}
+flow:
+  start: start
+  execution: {task_error_target: failed}
+steps:
+  - {id: start, type: start}
+  - id: gate
+    type: call
+    interface: IF-ECHO@1
+    dispatch:
+      - {when: "kind == 'bad'", sop: ECHO-BAD}
+    with: {value: value}
+    returns: {echoed: result}
+  - {id: done, type: end, outcome: success}
+  - {id: failed, type: end, outcome: failure}
+transitions:
+  - {id: T1, from: start, to: gate}
+  - {id: T2, from: gate, to: done}
+  - {id: TF, from: gate, to: failed, guard: "1 == 2"}

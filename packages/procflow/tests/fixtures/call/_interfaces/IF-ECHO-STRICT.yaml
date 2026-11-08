@@ -1,0 +1,10 @@
+id: IF-ECHO-STRICT
+version: "1.0"
+name: Echo a value (no default implementation)
+inputs:
+  value: {type: string, required: true}
+outputs:
+  echoed: {type: string, required: true}
+raises: [EchoRefused]
+pre: ["value != ''"]
+post: ["echoed != ''"]

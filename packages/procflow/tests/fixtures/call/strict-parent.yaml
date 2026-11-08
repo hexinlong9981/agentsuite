@@ -1,0 +1,33 @@
+sop:
+  id: STRICT-PARENT
+  name: Parent STRICT-PARENT
+  version: "1.0"
+interface:
+  inputs:
+    value: {type: string, required: true}
+    kind: {type: string, default: other}
+  outputs:
+    result: {type: string}
+  raises: []
+context:
+  result: {type: string}
+flow:
+  start: start
+  execution: {task_error_target: failed}
+steps:
+  - {id: start, type: start}
+  - id: gate
+    type: call
+    interface: IF-ECHO-STRICT@1
+    dispatch:
+      - {when: "kind == 'a'", sop: ECHO-STRICT-A}
+    with: {value: value}
+    returns: {echoed: result}
+    catch: {NoImplementation: handled}
+  - {id: done, type: end, outcome: success}
+  - {id: handled, type: end, outcome: handled}
+  - {id: failed, type: end, outcome: failure}
+transitions:
+  - {id: T1, from: start, to: gate}
+  - {id: T2, from: gate, to: done}
+  - {id: TF, from: gate, to: failed, guard: "1 == 2"}

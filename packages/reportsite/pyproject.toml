@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "reportsite"
+version = "0.0.1"
+description = "Generate accessible, data-separated HTML report sites for AI agents and verify them with a fail-closed completion gate (structure, secret-leak, accessibility/contrast, data integrity, links)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["ai-agent", "report", "html", "static-site", "accessibility", "deliverable"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+markdown = ["markdown>=3"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+reportsite = "reportsite.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reportsite"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

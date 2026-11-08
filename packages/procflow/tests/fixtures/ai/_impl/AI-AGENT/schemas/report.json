@@ -1,0 +1,1 @@
+{"type": "object", "required": ["report", "status"], "properties": {"report": {"type": "string"}, "status": {"type": "string"}}}

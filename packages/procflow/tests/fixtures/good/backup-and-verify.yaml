@@ -1,0 +1,30 @@
+sop:
+  id: BACKUP-AND-VERIFY
+  name: Back up a dataset and verify the copy
+  version: "1.0"
+  extends: APPROVED-CHANGE@1
+  implements: [IF-APPROVAL@1]
+  human_only: ["approve"]
+steps:
+  - id: prepare
+    type: task
+    override: APPROVED-CHANGE.prepare
+    mode: auto
+    action: Compute the list of files to back up
+    outputs: [plan]
+  - id: apply
+    type: task
+    override: APPROVED-CHANGE.apply
+    super: before
+    mode: auto
+    action: Copy the files to the backup location
+    evidence: [copy-log]
+  - id: verify
+    type: task
+    mode: auto
+    action: Compare checksums of source and copy
+    outputs: [verification]
+    evidence: [checksum-report]
+transitions:
+  - {id: T4, from: apply, to: verify}
+  - {id: T5, from: verify, to: done}

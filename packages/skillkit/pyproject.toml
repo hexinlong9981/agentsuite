@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skillkit"
+version = "0.0.1"
+description = "Conventions, a consistency linter, and a scaffolder for authoring agent skills and sub-agent definitions: validate front-matter, check that referenced skills/tools exist, keep one source of truth, and verify symlink integrity."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["ai-agent", "skills", "authoring", "linter", "scaffold", "conventions"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+yaml = ["PyYAML>=6"]
+dev = ["pytest>=8", "PyYAML>=6"]
+
+[project.scripts]
+skillkit = "skillkit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/skillkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

@@ -1,0 +1,7 @@
+defaults:
+  limits: {max_iterations: 50}
+caps:
+  limits.max_rounds: 4
+env:
+  staging:
+    timeout: {step: 1h}

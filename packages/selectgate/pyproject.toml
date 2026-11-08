@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "selectgate"
+version = "0.1.0"
+description = "A read-only SQL gateway: SELECT-only, EXPLAIN plan-gate, timeout, multi-target, audit."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["sql", "read-only", "explain", "plan-gate", "ai-agent", "mcp", "database", "safety"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+mysql = ["PyMySQL>=1.1"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+selectgate = "selectgate.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/selectgate"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

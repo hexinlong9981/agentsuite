@@ -1,0 +1,20 @@
+sop:
+  id: CALLS
+  name: Calls a concrete child
+  version: "1.0"
+context:
+  got: {type: string}
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: delegate
+    type: call
+    sop: CODE-ONLY
+    reason: runs a concrete child procedure and maps its output
+    with: {label: '"via-call"'}
+    returns: {summary: got}
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: delegate}
+  - {id: T2, from: delegate, to: done}

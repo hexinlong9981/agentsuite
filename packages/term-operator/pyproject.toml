@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "term-operator"
+version = "0.1.0"
+description = "Policy-gated interactive terminal/console driver: read = screen, send = commands via allowlist + approval; pluggable backend; audited."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["terminal", "console", "pty", "ssh", "automation", "ai-agent", "mcp", "approval"]
+dependencies = ["agent-policy-kit", "cmdgate"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+term-operator = "term_operator.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/term_operator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "../agent-policy-kit/src", "../cmdgate/src"]
+addopts = "-q"

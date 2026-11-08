@@ -1,0 +1,20 @@
+sop:
+  id: AGENT-WORK
+  name: An agent step yields a work ticket
+  version: "1.0"
+flow:
+  start: start
+  inputs:
+    - {id: topic, required: true}
+steps:
+  - {id: start, type: start}
+  - id: write
+    type: task
+    mode: agent
+    kind: agent
+    action: Write a short note about the topic
+    outputs: [note]
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: write}
+  - {id: T2, from: write, to: done}

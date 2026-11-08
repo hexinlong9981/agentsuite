@@ -1,0 +1,167 @@
+# Runtime config key declarations (layer 1: built-in defaults).
+#
+# Layers (later wins):
+#   L1 this file's `default`
+#   L2 <root>/_config/runtime.yaml          (defaults: / caps: / env:)
+#   L3 procedure definition `runtime:`      (base -> self; `locked:` lists keys lower layers cannot change)
+#   L4 <root>/_config/procedures/<ID>.yaml  (defaults: / env:)
+#   L5 env blocks (L2 then L4) for the chosen environment
+#   L6 --config <file>
+#   L7 --set key=value
+# A key that is not declared here is rejected in every layer.
+#
+# Per-key fields:
+#   type      int | number | bool | string | enum | set | names | duration | timerange | path | expr
+#   default   built-in value (null = no value). For `set` it is also the widest allowed set.
+#   min / cap lower bound / hard cap (L2 `caps:` may narrow the cap further, nothing may widen it)
+#   values    allowed values for enum
+#   lockable  may a definition's `runtime.locked` list it (then L4..L7 cannot change it)
+#   layers    layers allowed to write it (default [2,3,4,5,6,7])
+#   doc       meaning
+# A name containing <...> is a named family (e.g. targets.<name>); the <...> part is [A-Za-z0-9_-]+.
+version: 1
+reasons: [manual, abort, human_timeout, limit, error, session_lost, child, parent]
+keys:
+  env:
+    type: enum
+    values: [dev, test, staging, prod]
+    default: null
+    lockable: true
+    doc: Logical environment name; used only to resolve targets.
+  targets.<name>:
+    type: string
+    default: null
+    lockable: true
+    doc: Logical name of a target a step uses. Never a host, address or connection string.
+  limits.max_rounds:
+    type: int
+    default: 3
+    min: 1
+    cap: 5
+    lockable: true
+    doc: Ceiling on loop-backs (rounds).
+  limits.max_depth:
+    type: int
+    default: 2
+    min: 0
+    cap: 5
+    lockable: true
+    doc: Call depth.
+  limits.max_iterations:
+    type: int
+    default: 20
+    min: 1
+    cap: 200
+    lockable: true
+    doc: Iterations per loop.
+  limits.parallel:
+    type: int
+    default: 4
+    min: 1
+    cap: 8
+    lockable: true
+    doc: Branches made ready at once.
+  limits.max_active_runs:
+    type: int
+    default: 3
+    min: 1
+    cap: 8
+    layers: [2]
+    doc: Concurrent runs overall.
+  retry.code:
+    type: int
+    default: 1
+    min: 0
+    cap: 3
+    lockable: true
+    doc: Retries of a code step.
+  retry.llm:
+    type: int
+    default: 2
+    min: 0
+    cap: 5
+    lockable: true
+    doc: Retries of an llm/agent step before escalating to a human.
+  timeout.step:
+    type: duration
+    default: 2h
+    min: 1m
+    cap: 24h
+    lockable: true
+    doc: Timeout of one step.
+  human_wait.timeout:
+    type: duration
+    default: 8h
+    min: 5m
+    cap: 7d
+    lockable: true
+    doc: How long a human gate waits.
+  evidence.root:
+    type: path
+    default: runs
+    layers: [2]
+    doc: Root directory for run records and evidence (relative or absolute, no "..").
+  quiet_window.range:
+    type: timerange
+    default: null
+    layers: [2]
+    doc: HH:MM-HH:MM window in which no external-touching step is issued.
+  step_kinds.allowed:
+    type: set
+    values: [code, llm, agent, human]
+    default: [code, llm, agent, human]
+    lockable: true
+    doc: Step kinds a run may use. Narrowing only (the default is the widest set).
+  budget.max_calls_per_run:
+    type: int
+    default: 100
+    min: 0
+    cap: 10000
+    lockable: true
+    doc: Ceiling on llm/agent calls per run.
+  resume_when.<reason>:
+    type: expr
+    default: null
+    lockable: true
+    doc: Per-reason condition for automatic resume (guard expression). Default is never auto-resume.
+  budget.max_cost_per_run:
+    type: number
+    default: null
+    min: 0
+    lockable: true
+    doc: Ceiling on the summed cost estimate of llm/agent calls per run (unit-less; compared with each target's cost_per_call). null = no ceiling.
+  run.unattended:
+    type: bool
+    default: false
+    lockable: true
+    doc: The run has no person at the keyboard; llm/agent targets are then limited to ai.unattended_allowed (session targets queue a ticket and are exempt).
+  ai.allowed:
+    type: names
+    default: null
+    lockable: true
+    doc: Logical names of llm services / agents this run may use (null = every registered one). Always applied on top of the registry.
+  ai.unattended_allowed:
+    type: names
+    default: null
+    lockable: true
+    doc: Logical names the engine may call directly when run.unattended is true (null = none).
+  llm.default:
+    type: string
+    default: null
+    lockable: true
+    doc: "Per-procedure default llm target: <name>[/<model>], class=<tag>, or a comma list (first = primary, rest = fallback)."
+  agents.default:
+    type: string
+    default: null
+    lockable: true
+    doc: Per-procedure default agent target (same forms as llm.default).
+  llm.model:
+    type: string
+    default: null
+    lockable: true
+    doc: Default model overlay for llm targets that list this model.
+  steps.<name>.target:
+    type: string
+    default: null
+    lockable: true
+    doc: Per-step target (finest granularity; wins over llm.default / agents.default / the routing table). Same forms as llm.default.

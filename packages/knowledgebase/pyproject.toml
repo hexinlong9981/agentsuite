@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "knowledgebase"
+version = "0.0.1"
+description = "A store of small reusable facts an AI agent reads and grows: recall by relevance, grow-via-review (inbox then promote), freshness tracking, consistency check."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["ai-agent", "knowledge-base", "memory", "recall", "freshness"]
+dependencies = ["agent-policy-kit"]
+
+[project.scripts]
+kb = "knowledgebase.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/knowledgebase"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

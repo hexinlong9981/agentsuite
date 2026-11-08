@@ -1,0 +1,11 @@
+id: IF-ECHO
+version: "1.0"
+name: Echo a value
+inputs:
+  value: {type: string, required: true}
+outputs:
+  echoed: {type: string, required: true}
+raises: [EchoRefused]
+pre: ["value != ''"]
+post: ["echoed != ''"]
+default_impl: ECHO-DEFAULT

@@ -1,0 +1,5 @@
+sop: NARROW-CHILD
+defaults:
+  retry: {code: 3}
+  limits: {max_iterations: 15}
+  timeout: {step: 3h}

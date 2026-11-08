@@ -1,0 +1,22 @@
+sop:
+  id: AI-LOCAL
+  name: An llm step on local-only data
+  version: "1.0"
+flow:
+  start: start
+  inputs:
+    - {id: topic, required: true}
+steps:
+  - {id: start, type: start}
+  - id: classify
+    type: task
+    mode: agent
+    kind: llm
+    action: Classify the record
+    outputs: [label]
+    io: {output_schema: label.json}
+    llm: {data_class: restricted}
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: classify}
+  - {id: T2, from: classify, to: done}

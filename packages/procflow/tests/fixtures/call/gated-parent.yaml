@@ -1,0 +1,26 @@
+sop:
+  id: GATED-PARENT
+  name: Calls the child that waits for a person
+  version: "1.0"
+interface:
+  inputs:
+    value: {type: string, required: true}
+  outputs:
+    verdict: {type: string}
+  raises: []
+context:
+  verdict: {type: string}
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: gate
+    type: call
+    sop: GATED-CHILD
+    reason: a child with a human gate
+    with: {value: value}
+    returns: {verdict: verdict}
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: gate}
+  - {id: T2, from: gate, to: done}

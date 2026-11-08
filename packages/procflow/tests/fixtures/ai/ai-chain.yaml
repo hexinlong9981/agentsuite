@@ -1,0 +1,23 @@
+sop:
+  id: AI-CHAIN
+  name: One llm step
+  version: "1.0"
+flow:
+  start: start
+  inputs:
+    - {id: topic, required: true}
+steps:
+  - {id: start, type: start}
+  - id: summarize
+    type: task
+    mode: agent
+    kind: llm
+    action: Summarise the topic in one sentence
+    completion: a single sentence
+    outputs: [summary]
+    io: {output_schema: summary.json}
+    llm: {task_class: summarize, difficulty: low}
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: summarize}
+  - {id: T2, from: summarize, to: done}

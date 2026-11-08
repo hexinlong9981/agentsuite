@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gitborrow"
+version = "0.1.0"
+description = "Fetch source into disposable, read-only, agent-safe ephemeral checkouts (borrow then return)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["git", "ephemeral", "source-analysis", "ai-agent", "mcp", "security"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+gitborrow = "gitborrow.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gitborrow"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

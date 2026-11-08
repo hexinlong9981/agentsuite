@@ -1,0 +1,35 @@
+# agentsuite — workspace root (virtual; no distributable of its own).
+# Each tool lives in packages/<name> and is published independently; they share
+# the agent-policy-kit core, which is itself a workspace member.
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+agent-policy-kit = { workspace = true }
+
+[tool.pytest.ini_options]
+addopts = "-q --import-mode=importlib"
+testpaths = ["packages"]
+pythonpath = [
+  "packages/agent-policy-kit/src",
+  "packages/agent-policy-kit/examples",
+  "packages/gitborrow/src",
+  "packages/selectgate/src",
+  "packages/cmdgate/src",
+  "packages/remote-file-sync/src",
+  "packages/metrics-fetcher/src",
+  "packages/web-operator/src",
+  "packages/mailpeek/src",
+  "packages/chatpeek/src",
+  "packages/filepeek/src",
+  "packages/issuepeek/src",
+  "packages/term-operator/src",
+  "packages/agentflow/src",
+  "packages/mcp-runtime/src",
+  "packages/knowledgebase/src",
+  "packages/procflow/src",
+  "packages/playbook/src",
+  "packages/skillkit/src",
+  "packages/reportsite/src",
+]

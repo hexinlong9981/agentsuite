@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cmdgate"
+version = "0.1.0"
+description = "Run only allowlisted commands on allowlisted targets (local or SSH); read-only by default, audited."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["command", "allowlist", "policy", "ssh", "ai-agent", "mcp", "security", "sandbox"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+cmdgate = "cmdgate.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cmdgate"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

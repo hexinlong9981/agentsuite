@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "web-operator"
+version = "0.1.0"
+description = "Policy-gated browser automation: host x operation matrix, mutations require preview + approval, pluggable backend, audited."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["browser", "automation", "policy", "approval", "ai-agent", "mcp", "playwright", "safety"]
+dependencies = ["agent-policy-kit"]
+
+[project.optional-dependencies]
+playwright = ["playwright>=1.40"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+weboperator = "web_operator.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/web_operator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"

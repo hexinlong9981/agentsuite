@@ -1,0 +1,28 @@
+sop:
+  id: ECHO-A
+  name: Echo implementation ECHO-A
+  version: "1.0"
+  implements: [IF-ECHO@1]
+interface:
+  inputs:
+    value: {type: string, required: true}
+  outputs:
+    echoed: {type: string, required: true}
+  raises: [EchoRefused]
+flow:
+  start: start
+  execution: {task_error_target: failed}
+steps:
+  - {id: start, type: start}
+  - id: echo
+    type: task
+    mode: auto
+    action: Echo the value
+    impl: python3 echo.py A
+    outputs: [echoed]
+  - {id: done, type: end, outcome: success}
+  - {id: failed, type: end, outcome: failure}
+transitions:
+  - {id: T1, from: start, to: echo}
+  - {id: T2, from: echo, to: done}
+  - {id: TF, from: echo, to: failed, guard: "1 == 2"}

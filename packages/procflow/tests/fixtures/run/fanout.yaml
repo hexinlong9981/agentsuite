@@ -1,0 +1,42 @@
+sop:
+  id: FANOUT
+  name: Parallel split and join
+  version: "1.0"
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: split
+    type: parallel_split
+    branches: [branch-a, branch-b, branch-c]
+  - id: branch-a
+    type: task
+    mode: auto
+    action: Branch A
+  - id: branch-b
+    type: task
+    mode: manual
+    action: Branch B needs a person
+    outputs: [decision]
+  - id: branch-c
+    type: task
+    mode: auto
+    action: Branch C
+  - id: merge
+    type: join
+    wait_for: [branch-a, branch-b, branch-c]
+  - id: after
+    type: task
+    mode: auto
+    action: After the join
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: split}
+  - {id: T2, from: split, to: branch-a}
+  - {id: T3, from: split, to: branch-b}
+  - {id: T4, from: split, to: branch-c}
+  - {id: T5, from: branch-a, to: merge}
+  - {id: T6, from: branch-b, to: merge}
+  - {id: T7, from: branch-c, to: merge}
+  - {id: T8, from: merge, to: after}
+  - {id: T9, from: after, to: done}

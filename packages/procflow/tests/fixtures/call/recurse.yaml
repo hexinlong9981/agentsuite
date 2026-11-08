@@ -1,0 +1,20 @@
+sop:
+  id: RECURSE
+  name: A procedure that calls itself within its limits
+  version: "1.0"
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: again
+    type: call
+    sop: RECURSE
+    reason: recursion bounded by max_depth
+    allow_recursion: true
+    max_depth: 2
+    catch: {LimitReached: stop}
+  - {id: done, type: end, outcome: success}
+  - {id: stop, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: again}
+  - {id: T2, from: again, to: done}

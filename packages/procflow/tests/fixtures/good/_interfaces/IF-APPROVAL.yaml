@@ -1,0 +1,12 @@
+id: IF-APPROVAL
+version: "1.0"
+name: Approval-gated change
+description: A change that only proceeds after a human approval.
+inputs:
+  change_ref: {type: string, required: true}
+outputs:
+  approved: {type: bool, required: true}
+raises: [ApprovalDenied]
+safety:
+  human_steps_required: ["Approve"]
+default_impl: BACKUP-AND-VERIFY

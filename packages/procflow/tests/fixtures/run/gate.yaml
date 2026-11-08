@@ -1,0 +1,24 @@
+sop:
+  id: GATE
+  name: A human gate with a rejection route
+  version: "1.0"
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: approve
+    type: task
+    mode: manual
+    action: Approve the plan
+    outputs: [decision]
+  - id: apply
+    type: task
+    mode: auto
+    action: Apply (nothing to launch)
+  - {id: done, type: end, outcome: success}
+  - {id: rejected, type: end, outcome: rejected}
+transitions:
+  - {id: T1, from: start, to: approve}
+  - {id: T2, from: approve, to: apply, guard: "approve.decision == 'approved'"}
+  - {id: T3, from: approve, to: rejected, default: true}
+  - {id: T4, from: apply, to: done}

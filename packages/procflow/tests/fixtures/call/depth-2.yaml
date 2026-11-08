@@ -1,0 +1,19 @@
+sop:
+  id: DEPTH-2
+  name: Depth chain link 2
+  version: "1.0"
+flow:
+  start: start
+  execution: {task_error_target: failed}
+steps:
+  - {id: start, type: start}
+  - id: gate
+    type: call
+    sop: DEPTH-3
+    reason: next link of the chain
+  - {id: done, type: end, outcome: success}
+  - {id: failed, type: end, outcome: failure}
+transitions:
+  - {id: T1, from: start, to: gate}
+  - {id: T2, from: gate, to: done}
+  - {id: TF, from: gate, to: failed, guard: "1 == 2"}

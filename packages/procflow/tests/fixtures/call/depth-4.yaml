@@ -1,0 +1,11 @@
+sop:
+  id: DEPTH-4
+  name: Depth chain leaf
+  version: "1.0"
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: done}

@@ -1,0 +1,48 @@
+sop:
+  id: APPROVED-CHANGE
+  name: Approved change (abstract template)
+  version: "1.0"
+  abstract: true
+  human_only: ["approve"]
+interface:
+  inputs:
+    change_ref: {type: string, required: true}
+  outputs:
+    approved: {type: bool, required: true}
+  raises: [ApprovalDenied]
+context:
+  plan: {type: string}
+flow:
+  start: start
+  inputs:
+    - {id: change_ref, required: true}
+  outputs:
+    - {id: approved}
+  execution: {max_rounds: 2, timeout_policy: 4h}
+steps:
+  - {id: start, type: start}
+  - id: prepare
+    type: task
+    abstract: true
+    mode: auto
+    action: Prepare the change plan
+    outputs: [plan]
+  - id: approve
+    type: task
+    mode: manual
+    final: true
+    action: Approve the plan
+    outputs: [decision]
+    evidence: [approval-record]
+    raises: [ApprovalDenied]
+  - id: apply
+    type: task
+    hook: true
+    mode: auto
+    action: Apply the change (default does nothing)
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: prepare}
+  - {id: T2, from: prepare, to: approve}
+  - {id: T3, from: approve, to: apply, guard: "approve.decision == 'approved'"}
+  - {id: T4, from: apply, to: done}

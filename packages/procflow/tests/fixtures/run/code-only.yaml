@@ -1,0 +1,35 @@
+sop:
+  id: CODE-ONLY
+  name: Two code steps
+  version: "1.0"
+interface:
+  inputs:
+    label: {type: string, default: demo}
+  outputs:
+    summary: {type: string}
+  raises: []
+context:
+  result: {type: string}
+  summary: {type: string}
+flow:
+  start: start
+steps:
+  - {id: start, type: start}
+  - id: first
+    type: task
+    mode: auto
+    action: Run the demo program
+    impl: python3 emit.py <label>
+    outputs: [result]
+    evidence: [log]
+  - id: second
+    type: task
+    mode: auto
+    action: Write the summary
+    impl: python3 emit.py done
+    outputs: [summary]
+  - {id: done, type: end, outcome: success}
+transitions:
+  - {id: T1, from: start, to: first}
+  - {id: T2, from: first, to: second}
+  - {id: T3, from: second, to: done}
